@@ -1,0 +1,100 @@
+# Environment variables and secrets
+
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+
+# Claude Code and MCP local configuration
+
+.claude/settings.local.json
+.mcp.local.json
+
+# Playwright local state and reports
+
+.playwright/
+playwright/.auth/
+playwright-report/
+test-results/
+blob-report/
+storageState*.json
+storage-state*.json
+auth.json
+*auth-state.json
+my-session.json
+
+# Dependencies
+
+node_modules/
+
+# Build and generated output
+
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+
+.next/
+.nuxt/
+.svelte-kit/
+.turbo/
+.vite/
+.parcel-cache/
+
+# Python environments and caches
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local databases
+
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db-journal
+
+# Logs
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Temporary files and caches
+
+.cache/
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# IDE-specific local files
+
+.idea/
+*.iml
+.vscode/settings.local.json
+
+# Operating system files
+
+.DS_Store
+Thumbs.db
+Desktop.ini
