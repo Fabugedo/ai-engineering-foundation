@@ -78,6 +78,10 @@ Avoid:
 
 A prototype may have a limited scope, but its definition and implementation should still follow professional practices.
 
+Treat the user as the architect and reviewer, not as a typist. For any non-trivial technical decision, present two or three viable options with their trade-offs and a recommendation, and let the user choose before implementing. Do not silently select an architecture. Explain each significant decision in plain language a junior can follow: what was chosen, why, and what was rejected.
+
+Choose the internal architecture and the deployment topology as two separate decisions. Consult `docs/architecture-decision-guide.md` before choosing an internal architecture (layered, vertical slice, hexagonal) or a deployment topology (modular monolith, microservices, event-driven). Default to a modular monolith organized by feature, with ports and adapters only at genuine external boundaries. Keep dependencies pointing toward the domain: business logic must not depend on details of the database, transport, or external providers.
+
 ## Code organization
 
 Prefer organizing product code by business capability, feature, or bounded context rather than only by technical layer.
@@ -114,9 +118,25 @@ Reserve shared directories for capabilities that are genuinely reused across mul
 
 Do not move feature-specific logic into shared folders merely because it might be reused in the future.
 
-Do not introduce deep internal layers, Domain-Driven Design patterns, ports and adapters, or complex abstractions unless the real size and complexity of the project justify them.
+Do not introduce deep internal layers, Domain-Driven Design patterns, ports and adapters, or complex abstractions unless the real size and complexity of the project justify them. A port and adapter is justified for a piece of code when it touches an external dependency (database, external API, AI provider, filesystem) that you would want to test without calling, might swap later, or must validate as an untrusted boundary — and is not justified for pure internal logic. See `docs/architecture-decision-guide.md`.
 
 Framework conventions or an approved technical plan may override this default.
+
+## Architecture decisions and diagrams
+
+Record significant decisions as Architecture Decision Records (ADRs) under `docs/adr/`, one decision per file, using `docs/adr/0000-template.md`. See `docs/adr/README.md`. Prefer writing the ADR for the option the user approved, using the `/adr` skill to scaffold it.
+
+An ADR is required when a decision:
+
+* changes the architecture or the boundaries between modules;
+* introduces, removes, or swaps an external dependency (database, external API, AI provider, authentication);
+* establishes a data-flow or trust boundary;
+* selects a framework, protocol, or storage approach;
+* is expensive or painful to reverse.
+
+Small, reversible changes do not need an ADR.
+
+Maintain at least one current architecture diagram per project in `docs/architecture.md` using Mermaid. Update it whenever module boundaries, data flow, or external dependencies change. Keeping the diagram and the relevant ADRs current is part of completing any feature that changes structure.
 
 ## Tools
 
@@ -168,6 +188,21 @@ Use the appropriate Spec Kit artifacts for:
 Document important commands, setup requirements, architectural decisions, and limitations where future contributors can find them.
 
 Do not document unverified behavior as if it were confirmed.
+
+### Project README
+
+The `README.md` committed for a concrete project must describe *that project*, not this foundation. This foundation's own README explains the template; it must never be published as if it were the product's README.
+
+Before the first publication of a concrete project, replace the inherited README with a project-specific one. A copyable starting point is `docs/project-readme-template.md`. At minimum it should cover:
+
+* what the product does and its current status;
+* how to run it locally (prerequisites, setup steps, commands);
+* the technology stack;
+* a short architecture summary, linking to `docs/architecture.md` and `docs/adr/`;
+* configuration and environment variables (referencing `.env.example`, never real secrets);
+* how to test it.
+
+Writing or updating the project README so it reflects the actual product is part of completing the project's first publishable state, and part of any change that alters how the project is run, configured, or structured.
 
 ## Security and secrets
 
@@ -397,6 +432,7 @@ At the end of each task, report:
 * what remains unresolved;
 * any assumptions;
 * any open questions;
+* any architecture decisions recorded (ADRs) and whether the architecture diagram was updated;
 * any relevant risks or limitations.
 
 Be precise about failures and incomplete verification.

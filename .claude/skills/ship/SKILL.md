@@ -285,6 +285,7 @@ Before staging, committing, creating a repository, or pushing, present a summary
 * differential-review result when applicable;
 * insecure-defaults result when applicable;
 * unresolved failures or risks;
+* whether `README.md` describes the project itself and not the foundation (for a concrete project);
 * proposed commit message;
 * whether a remote exists;
 * current remote destination;

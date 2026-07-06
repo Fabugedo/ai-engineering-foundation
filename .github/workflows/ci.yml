@@ -1,0 +1,53 @@
+name: CI
+
+# Runs automatically on GitHub's servers on every push to main and every pull request.
+# Today it enforces the foundation's most important gate: no secrets ever get committed.
+# It mirrors what the /ship skill does locally, but here it happens automatically — even
+# if someone forgets to run it. Each concrete project built from this foundation should
+# extend the commented "checks" job below with its own lint / type-check / test / build.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # scan the whole history, not only the latest commit
+
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: 8.18.4   # bump when a newer release is available
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/
+          gitleaks version
+
+      - name: Scan for secrets
+        run: gitleaks detect --source . --redact --no-banner
+
+  # ---------------------------------------------------------------------------
+  # TEMPLATE — uncomment and adapt in a concrete project once it has code + tests.
+  # The foundation itself has no application code, so there is nothing to test here yet.
+  #
+  # checks:
+  #   name: Lint, type-check, test, build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
+  #     - run: npm ci
+  #     - run: npm run lint
+  #     - run: npm run typecheck
+  #     - run: npm test
+  #     - run: npm run build
+  # ---------------------------------------------------------------------------
