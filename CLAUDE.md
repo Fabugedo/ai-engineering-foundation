@@ -163,6 +163,8 @@ Use Playwright CLI to verify important browser flows and inspect:
 * failed network requests;
 * loading, empty, success, and error states.
 
+Use visual-audit to evaluate the visual quality of an already-implemented interface: it drives the real render through Playwright CLI, captures evidence, and returns a severity-ranked report with a verdict. It complements frontend-design (which creates UI) and Playwright CLI (which drives the browser); it does not replace either and does not impose an aesthetic.
+
 Use Git and GitHub CLI for repository and publishing operations.
 
 Do not add new tools, plugins, MCP servers, frameworks, or dependencies without a clear and approved project need.
@@ -312,7 +314,8 @@ When a project includes a user interface:
 * provide useful labels and validation messages;
 * include loading, empty, success, disabled, and error states;
 * avoid generic placeholder interfaces;
-* verify important flows in a real browser with Playwright CLI.
+* verify important flows in a real browser with Playwright CLI;
+* audit visual quality with visual-audit before approving a screen as done, and require at least one real capture of the render for any verdict.
 
 Do not assume a frontend framework until the approved technical plan selects one.
 
