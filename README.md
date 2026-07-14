@@ -6,6 +6,20 @@ This repository is not a product application and does not impose a frontend fram
 
 Each concrete project created from this foundation must define those decisions through its own specification and technical plan.
 
+## At a glance
+
+A quick inventory of what ships in this repository.
+
+| Area | What's included |
+| ---- | --------------- |
+| **Spec-Driven Development** | [GitHub Spec Kit](https://github.com/github/spec-kit), driven by PowerShell scripts under `.specify/` and exposed through the `speckit-*` skills. |
+| **Skills** (15) | Spec Kit: `speckit-constitution`, `speckit-specify`, `speckit-clarify`, `speckit-plan`, `speckit-tasks`, `speckit-checklist`, `speckit-analyze`, `speckit-implement`, `speckit-converge`, `speckit-taskstoissues`, `speckit-agent-context-update`. Delivery: `adr`, `ship`, `playwright-cli`, `visual-audit`. |
+| **MCP servers** (2) | Context7 (current technical documentation) and Mermaid (editable diagrams), configured in `.mcp.json` without credentials. |
+| **Plugins** (3) | `frontend-design` (Anthropic), `insecure-defaults` and `differential-review` (Trail of Bits), enabled in `.claude/settings.json`. |
+| **Documentation** | Architecture decision guide, ADRs, an editable architecture diagram, and a project README template under `docs/`. |
+
+Each area is detailed in the sections below.
+
 ## Purpose
 
 The foundation provides a disciplined starting point for AI-assisted development.
@@ -49,109 +63,93 @@ Publication
 
 The scope of a prototype may be limited, but its requirements and implementation should still be defined professionally.
 
-## Included capabilities
+## Skills
 
-### Spec-Driven Development
+Skills are the reusable procedures Claude Code can run inside this foundation. They live in
+[.claude/skills/](.claude/skills/) and are invoked as `/<skill-name>`. Fifteen skills ship
+with the foundation, grouped by purpose.
 
-GitHub Spec Kit provides the workflow and artifacts for:
+### Spec-Driven Development (GitHub Spec Kit)
 
-* project principles;
-* feature specifications;
-* clarification;
-* technical planning;
-* research;
-* data models;
-* contracts;
-* executable tasks;
-* consistency analysis;
-* implementation.
+These skills drive the core workflow, from defining principles to shipping code.
 
-The installed Claude Code commands include:
+| Skill | Purpose |
+| ----- | ------- |
+| `/speckit-constitution` | Create or update the project constitution and keep dependent templates in sync. |
+| `/speckit-specify` | Create or update a feature specification from a natural-language description. |
+| `/speckit-clarify` | Ask targeted questions to resolve underspecified areas and record the answers in the spec. |
+| `/speckit-plan` | Produce the technical plan and design artifacts from the spec. |
+| `/speckit-tasks` | Generate a dependency-ordered `tasks.md` from the design artifacts. |
+| `/speckit-checklist` | Generate a custom quality checklist for the current feature. |
+| `/speckit-analyze` | Run a non-destructive consistency check across `spec.md`, `plan.md`, and `tasks.md`. |
+| `/speckit-implement` | Execute the approved tasks in `tasks.md`. |
+| `/speckit-converge` | Compare the codebase against the spec/plan/tasks and append any remaining unbuilt work as new tasks. |
+| `/speckit-taskstoissues` | Convert tasks into dependency-ordered GitHub issues. |
+| `/speckit-agent-context-update` | Refresh the managed Spec Kit section inside coding-agent context files. |
 
-```text
-/speckit-constitution
-/speckit-specify
-/speckit-clarify
-/speckit-plan
-/speckit-tasks
-/speckit-checklist
-/speckit-analyze
-/speckit-implement
-/speckit-converge
-```
+### Architecture and delivery
 
-### Claude Code project instructions
+| Skill | Purpose |
+| ----- | ------- |
+| `/adr` | Scaffold and write an Architecture Decision Record for a significant technical decision (see [docs/adr/](docs/adr/)). |
+| `/ship` | Safely review, scan, commit, and publish repository changes with Git and GitHub CLI. |
+| `/playwright-cli` | Automate a real browser to verify web flows, forms, states, and responsiveness. |
+| `/visual-audit` | Audit an already-implemented interface in a real browser and produce an evidence-backed, severity-ranked visual-quality report with a verdict. |
 
-`CLAUDE.md` defines permanent project rules for:
+## Enabled plugins
 
-* requirements and assumptions;
-* development workflow;
-* architecture and scope;
+Plugins are installed from external Claude Code marketplaces and enabled in
+[.claude/settings.json](.claude/settings.json). Unlike skills, their source does not live in
+this repository; they are pulled in per developer environment.
+
+| Plugin | Marketplace | Purpose |
+| ------ | ----------- | ------- |
+| `frontend-design` | `claude-plugins-official` (Anthropic) | Distinctive, intentional UI design: aesthetic direction, typography, and layout that avoid templated defaults. |
+| `insecure-defaults` | `trailofbits` | Review configuration and code for insecure defaults and unsafe settings. |
+| `differential-review` | `trailofbits` | Review meaningful Git changes for regressions and defects. |
+
+## Project instructions (`CLAUDE.md`)
+
+[CLAUDE.md](CLAUDE.md) defines the permanent project rules Claude Code must follow, covering:
+
+* requirements, assumptions, and decision labels;
+* the development workflow;
+* architecture and scope (paired with `docs/architecture-decision-guide.md`);
 * feature-oriented code organization;
 * security and secret handling;
-* destructive operations;
+* destructive and external actions;
 * database changes;
 * frontend quality;
 * testing and verification;
 * dependency management;
-* Git and publication.
+* change review, Git, and publication.
 
-### MCP servers
+## MCP servers
 
-The project includes `.mcp.json` with:
+[.mcp.json](.mcp.json) configures two documentation and diagramming servers. The repository
+configuration contains no credentials; MCP authorization is local to each developer and stored
+in files excluded from Git.
 
-| MCP      | Purpose                                               |
-| -------- | ----------------------------------------------------- |
-| Context7 | Current and version-sensitive technical documentation |
-| Mermaid  | Editable technical and architecture diagrams          |
+| MCP | Purpose |
+| --- | ------- |
+| Context7 | Current and version-sensitive technical documentation. |
+| Mermaid | Editable technical and architecture diagrams. |
 
-The repository configuration does not contain credentials.
+## Documentation and architecture
 
-MCP authorization is local to each developer and may be stored in files excluded from Git.
+Reusable documentation lives in [docs/](docs/) and is meant to guide, not to be duplicated by
+Spec Kit artifacts.
 
-### Security and review
+| File | Purpose |
+| ---- | ------- |
+| [docs/architecture-decision-guide.md](docs/architecture-decision-guide.md) | How to choose an internal architecture and a deployment topology, written for a junior to follow. |
+| [docs/adr/](docs/adr/) | Architecture Decision Records — one decision per file, with `0000-template.md` and a `README.md` explaining the process. |
+| [docs/architecture.md](docs/architecture.md) | The current architecture diagram(s) in Mermaid; a template to replace when a real project starts. |
+| [docs/project-readme-template.md](docs/project-readme-template.md) | A copyable starting point for a concrete project's own README. |
 
-The project enables:
-
-| Capability          | Purpose                                                    |
-| ------------------- | ---------------------------------------------------------- |
-| Gitleaks            | Deterministic secret scanning                              |
-| insecure-defaults   | Review insecure configuration and unsafe defaults          |
-| differential-review | Review meaningful Git changes and regressions              |
-| `.gitignore`        | Exclude secrets, local state, reports, and generated files |
-| `.env.example`      | Document environment variables without real credentials    |
-
-### Frontend and browser verification
-
-The project includes:
-
-| Capability      | Purpose                                                             |
-| --------------- | ------------------------------------------------------------------- |
-| frontend-design | Improve interface composition, hierarchy, states, and accessibility |
-| Playwright CLI  | Verify important flows in a real browser                            |
-
-Playwright can be used to inspect:
-
-* navigation;
-* forms;
-* visible states;
-* responsive behavior;
-* console errors;
-* failed network requests;
-* screenshots and snapshots.
-
-### Git and GitHub
-
-Git and GitHub CLI are used for:
-
-* local version control;
-* repository creation;
-* commits;
-* pushes;
-* pull requests;
-* issues and workflows when required.
-
-The `/ship` project skill provides a controlled workflow for review, secret scanning, verification, commit, and push.
+> **Note:** the README a concrete project publishes must describe *that product*, not this
+> foundation. Replace this file using `docs/project-readme-template.md` before the first
+> publication of a real project.
 
 ## Repository structure
 
@@ -159,13 +157,15 @@ The `/ship` project skill provides a controlled workflow for review, secret scan
 ai-engineering-foundation/
 │
 ├── .claude/
-│   ├── skills/
-│   ├── settings.json
-│   └── settings.local.json        # Local and excluded from Git
+│   ├── skills/                     # The 15 skills documented above
+│   ├── settings.json               # Enabled plugins
+│   └── settings.local.json         # Local, excluded from Git
 │
-├── .playwright/                   # Local state and excluded from Git
+├── .github/                        # CI and repository workflows
 │
-├── .specify/
+├── .playwright/                    # Local browser state, excluded from Git
+│
+├── .specify/                       # Spec Kit engine
 │   ├── extensions/
 │   ├── integrations/
 │   ├── memory/
@@ -173,30 +173,29 @@ ai-engineering-foundation/
 │   ├── templates/
 │   └── workflows/
 │
+├── docs/                           # Architecture guide, ADRs, diagrams, README template
+│   ├── adr/
+│   ├── architecture-decision-guide.md
+│   ├── architecture.md
+│   └── project-readme-template.md
+│
 ├── .env.example
 ├── .gitignore
 ├── .mcp.json
 ├── CLAUDE.md
+├── CONTRIBUTING.md
+├── LICENSE
 └── README.md
 ```
 
-Concrete projects created from this foundation may later add:
-
-```text
-src/
-tests/
-migrations/
-specs/
-package.json
-pyproject.toml
-docker-compose.yml
-```
-
-Those files and directories are not imposed by the foundation.
+Concrete projects created from this foundation may later add source, tests, migrations, specs,
+and package manifests (`src/`, `tests/`, `migrations/`, `specs/`, `package.json`,
+`pyproject.toml`, `docker-compose.yml`). None of those are imposed by the foundation.
 
 ## Code organization preference
 
-When the selected framework permits it, product code should preferably be organized by business capability, feature, or bounded context.
+When the selected framework permits it, product code should preferably be organized by business
+capability, feature, or bounded context.
 
 Example:
 
@@ -218,11 +217,9 @@ src/
 └── app/
 ```
 
-Feature-specific API code, business logic, validation, persistence, types, and tests should remain close together.
-
-Shared directories should contain only genuinely cross-cutting capabilities.
-
-The approved technical plan or framework conventions may override this preference.
+Feature-specific API code, business logic, validation, persistence, types, and tests should
+remain close together. Shared directories should contain only genuinely cross-cutting
+capabilities. The approved technical plan or framework conventions may override this preference.
 
 ## What is intentionally not included
 
@@ -256,18 +253,19 @@ uv
 Specify CLI
 ```
 
-Some projects may require additional tools, but they should not be added to the foundation without a clear reusable purpose.
+Some projects may require additional tools, but they should not be added to the foundation
+without a clear reusable purpose.
 
 ### Spec Kit scripts and PowerShell
 
-This Spec Kit installation uses PowerShell scripts (`.specify/scripts/powershell/*.ps1`) to run the Spec-Driven Development workflow.
+This Spec Kit installation uses PowerShell scripts (`.specify/scripts/powershell/*.ps1`) to run
+the Spec-Driven Development workflow.
 
 * Windows contributors can run these scripts with the built-in Windows PowerShell or PowerShell 7+.
-* Linux and macOS contributors need PowerShell (`pwsh`, PowerShell 7+) installed and available on `PATH` to run the generated `.ps1` workflow scripts.
+* Linux and macOS contributors need PowerShell (`pwsh`, PowerShell 7+) installed and available on
+  `PATH` to run the generated `.ps1` workflow scripts.
 
-## Verify the local installation
-
-Run:
+### Verify the local installation
 
 ```powershell
 git --version
@@ -281,19 +279,20 @@ specify version
 claude mcp list
 ```
 
-Not every command is required by every project, but the foundation assumes its core tools are available locally.
+Not every command is required by every project, but the foundation assumes its core tools are
+available locally.
 
 ## Starting a project
 
 ### Option 1: Copy the foundation
 
-Copy the repository into a new project directory and remove any history that should not be inherited.
+Copy the repository into a new project directory and remove any history that should not be
+inherited.
 
 ### Option 2: GitHub template repository
 
-After the foundation is published and validated, enable the GitHub **Template repository** setting.
-
-Then create each new project from the template.
+Once the foundation is published, enable the GitHub **Template repository** setting and create
+each new project from the template.
 
 ### Initial project workflow
 
@@ -302,19 +301,20 @@ Inside the new project:
 1. Open the project root in VSCode.
 2. Start Claude Code from that root.
 3. Authorize the required MCP servers locally.
-4. Define or update the project constitution.
-5. Create the first feature specification.
-6. Clarify missing requirements.
-7. Produce the technical plan.
-8. Generate tasks.
-9. Analyze consistency.
-10. Implement and verify.
+4. Define or update the project constitution (`/speckit-constitution`).
+5. Create the first feature specification (`/speckit-specify`).
+6. Clarify missing requirements (`/speckit-clarify`).
+7. Produce the technical plan (`/speckit-plan`).
+8. Generate tasks (`/speckit-tasks`).
+9. Analyze consistency (`/speckit-analyze`).
+10. Implement and verify (`/speckit-implement`).
+11. Replace this README using `docs/project-readme-template.md`.
 
 Do not build a concrete product directly inside the master foundation repository.
 
 ## Environment variables
 
-`.env.example` contains safe, commented examples.
+[.env.example](.env.example) contains safe, commented examples.
 
 For a concrete project:
 
@@ -348,7 +348,7 @@ Confirm local files and secrets are excluded
 Commit and publish
 ```
 
-Useful command:
+The `/ship` skill runs this workflow in a controlled way. A useful manual command:
 
 ```powershell
 gitleaks detect --source . --no-banner
@@ -370,11 +370,13 @@ When a project requires persistence:
 * keep credentials outside Git;
 * require approval for destructive migrations.
 
-Database-specific tools and integrations belong to the concrete project unless they become a proven reusable need.
+Database-specific tools and integrations belong to the concrete project unless they become a
+proven reusable need.
 
 ## Important boundaries
 
-This foundation supports professional prototype development, but it does not automatically make a project production-ready.
+This foundation supports professional prototype development, but it does not automatically make
+a project production-ready.
 
 Production systems may additionally require:
 
@@ -390,44 +392,12 @@ Production systems may additionally require:
 * deployment security;
 * operational documentation.
 
-## Current status
-
-```text
-Spec Kit                         Installed
-Context7 MCP                     Configured
-Mermaid MCP                      Configured
-Playwright CLI skill             Installed
-Frontend Design                  Enabled
-insecure-defaults                Enabled
-differential-review              Enabled
-Gitleaks                         Installed; worktree scan passed
-CLAUDE.md                        Configured
-.gitignore                       Configured
-.env.example                     Configured
-README.md                        Configured
-/ship skill                      Configured
-Local Git repository             Initialized on main
-Security plugin review           Pending
-Initial Git commit               Pending
-GitHub repository                Pending
-Template repository setting      Pending
-```
-
-
-## Next foundation milestones
-
-1. Run the configured security and differential review capabilities.
-2. Stage and inspect the complete initial commit.
-3. Create a clean initial commit.
-4. Publish the repository privately.
-5. Validate the repository from a fresh clone.
-6. Enable the GitHub template setting when ready.
-
-
 ## Guiding principle
 
 Add only capabilities with a clear, testable purpose.
 
-More tools, plugins, MCP servers, dependencies, and abstractions do not automatically produce better software.
+More tools, plugins, MCP servers, dependencies, and abstractions do not automatically produce
+better software.
 
-The preferred foundation is small enough to understand, strict enough to reduce avoidable mistakes, and flexible enough to support different prototype architectures.
+The preferred foundation is small enough to understand, strict enough to reduce avoidable
+mistakes, and flexible enough to support different prototype architectures.
