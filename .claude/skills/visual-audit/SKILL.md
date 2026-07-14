@@ -22,6 +22,15 @@ It complements, and does not replace:
   truth for *what* the screen must do. This skill judges *how well the render communicates
   it*; it does not invent requirements, write tasks, or generate checklists.
 
+## Prerequisite
+
+This skill **cannot run without the `playwright-cli` command** available in the environment —
+it is the only way the skill observes the real render. Check it first
+(`playwright-cli --version`, or `npx --no-install playwright-cli --version`); if it is missing,
+install it as described in [../playwright-cli/SKILL.md](../playwright-cli/SKILL.md). If it
+still cannot be made available, you **cannot** produce a verdict: report `audit blocked` and
+tell the user, and never approve a screen without inspecting its rendered result.
+
 ## The question this skill answers
 
 Distinguish three states and say which one the screen is in:
